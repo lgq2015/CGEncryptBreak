@@ -912,7 +912,7 @@ void __cdecl +[BaseNetTool setHeadersWithoutToken:withParams:withSerializer:with
 
 10.至此，完整的静态分析过程结束，之后就可以依据上方分析结果使用其他语言脱机请求了。
 
-*** 动态分析
+*** 动态分析，基于[ZXHookUtil](https://github.com/SmileZXLee/ZXHookUtil)
 1. 我们添加一个全局按钮，并且在按钮点击事件中打印当前控制器，来到登录控制器，点击按钮，即可观察到登录控制器类名：
 ```objective-c
 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -958,7 +958,6 @@ dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), di
 [ZXMethodLog][02:07:56.730767965] │ │ ┌ +[Call][NetManger shareManger]
 [ZXMethodLog][02:07:56.731011986] │ │ └ +[Return]<NetManger: 0x1700050a0>
 [ZXMethodLog][02:07:56.731948018] │ │ ┌ -[Call][<NetManger: 0x1700050a0> postWithRealmNameStr:http://210.34.81.129/cgapp-server/ parameters:<__NSDictionaryI: 0x1740fec00 JsonContent: {"username" : "123","provinceCode" : "35","password" : "EtCPK\/NQZaOf8eDLJFtG\/A==","randomCode" : "34"}> withTimeoutInterval:13 isUseHttps:1 apiStr:/api/f/v6/login success:unknown failure:unknown]
-2019-03-25 02:07:56.732357 ChingoItemCGTY[3957:436777] http://210.34.81.129/cgapp-server/
 [ZXMethodLog][02:07:56.734148025] │ │ │ ┌ +[Call][RequstUtils postWithRealmNameStr:http://210.34.81.129/cgapp-server/ parameters:<__NSDictionaryI: 0x1740fec00 JsonContent: {"username" : "123","provinceCode" : "35","password" : "EtCPK\/NQZaOf8eDLJFtG\/A==","randomCode" : "34"}> withTimeoutInterval:13 isUseHttps:1 apiStr:/api/f/v6/login success:unknown failure:unknown]
 [ZXMethodLog][02:07:56.737403988] │ │ │ │ ┌ +[Call][BaseNetTool setHeadersWithoutToken:/api/f/v6/login withParams:<__NSDictionaryI: 0x1740fec00 JsonContent: {"username" : "123","provinceCode" : "35","password" : "EtCPK\/NQZaOf8eDLJFtG\/A==","randomCode" : "34"}> withSerializer:<AFHTTPRequestSerializer: 0x1742a13e0> withSecret:]
 [ZXMethodLog][02:07:56.738083004] │ │ │ │ │ ┌ +[Call][NSMutableDictionary screeningEmptyValueDictionary:<__NSDictionaryI: 0x1740fec00 JsonContent: {"username" : "123","provinceCode" : "35","password" : "EtCPK\/NQZaOf8eDLJFtG\/A==","randomCode" : "34"}>]
