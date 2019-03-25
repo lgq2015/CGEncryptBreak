@@ -27,7 +27,7 @@ timestamp: 1553435930424
 * IDA是全球知名的反汇编工具，我们也可以使用Hopper进行静态分析，此处以IDA为例。
 * 脱壳，解压ipa，找到.app文件，右键显示包内容，将其中的可执行mach-o文件导入IDA中。
 * 在左侧Functions Window中搜索didFinishLaunchingWithOptions，寻找登录控制器。
-* IDA有一个非常强大的功能，可以直接F5生成C++风格的伪代码，大大减少了逐行分析汇编代码的时间。
+* IDA可以直接F5生成C++风格的伪代码，大大减少了逐行分析汇编代码的时间。
 1. 下方是[AppDelegate application:didFinishLaunchingWithOptions:]中的部分伪代码，为了方便查阅，作了一些删减。
 ```c++
 bool __cdecl -[AppDelegate application:didFinishLaunchingWithOptions:](AppDelegate *self, SEL a2, id a3, id a4)
@@ -41,45 +41,6 @@ bool __cdecl -[AppDelegate application:didFinishLaunchingWithOptions:](AppDelega
 ```c++
 void __cdecl -[AppDelegate login](AppDelegate *self, SEL a2)
 {
-  AppDelegate *v2; // x19
-  void *v3; // x21
-  void *v4; // x0
-  void *v5; // x22
-  void *v6; // x21
-  void *v7; // x0
-  __int64 v8; // x22
-  UIWindow *v9; // x0
-  void *v10; // x23
-  UIWindow *v11; // x0
-  void *v12; // x22
-  void *v13; // x0
-  void *v14; // x0
-  void *v15; // x23
-  void *v16; // x0
-  void *v17; // x24
-  int v18; // w25
-  BaseTabBarVC *v19; // x0
-  BaseTabBarVC *v20; // x20
-  UIWindow *v21; // x0
-  void *v22; // x19
-  XJTYWebLoginVC *v23; // x0
-  void *v24; // x0
-  LoginVC *v25; // x0
-  LoginVC *v26; // x23
-  BaseNaviVC *v27; // x0
-  BaseNaviVC *v28; // x20
-  void *v29; // x0
-  void *v30; // x22
-  UIWindow *v31; // x0
-  void *v32; // x19
-  XJTYWebLoginVC *v33; // x0
-  XJTYWebLoginVC *v34; // x22
-  BaseNaviVC *v35; // x0
-  BaseNaviVC *v36; // x20
-  UIWindow *v37; // x0
-  LoginVC *v38; // x0
-  BaseNaviVC *v39; // x0
-  void *v40; // x19
   //下面是Window的初始化，略过
   v2 = self;
   v3 = objc_msgSend(&OBJC_CLASS___UIWindow, "alloc");
@@ -778,42 +739,6 @@ void __cdecl +[RequstUtils postWithRealmNameStr:parameters:withTimeoutInterval:i
 ```c++
 void __cdecl +[BaseNetTool setHeadersWithoutToken:withParams:withSerializer:withSecret:](BaseNetTool_meta *self, SEL a2, id a3, id a4, id a5, id a6)
 {
-  id v6; // x20
-  id v7; // x21
-  void *v8; // x19
-  __int64 v9; // x1
-  __int64 v10; // x22
-  __int64 v11; // x1
-  void *v12; // x20
-  void *v13; // x0
-  __int64 v14; // x21
-  void *v15; // x0
-  void *v16; // x22
-  double v17; // d0
-  unsigned __int64 v18; // x25
-  void *v19; // x0
-  __int64 v20; // x22
-  void *v21; // x0
-  __int64 v22; // x0
-  __int64 v23; // x23
-  void *v24; // x0
-  __int64 v25; // x0
-  __int64 v26; // x24
-  void *v27; // x0
-  __int64 v28; // x25
-  void *v29; // x0
-  void *v30; // x0
-  void *v31; // x27
-  void *v32; // x0
-  __int64 v33; // x28
-  const __CFString *v34; // x2
-  void *v35; // x0
-  __int64 v36; // x27
-  void *v37; // x0
-  void *v38; // x0
-  void *v39; // x0
-  __int64 v40; // x28
-
   v6 = a5;
   v7 = a4;
   //v8 = a3 = 当前接口名
@@ -898,21 +823,14 @@ void __cdecl +[BaseNetTool setHeadersWithoutToken:withParams:withSerializer:with
   objc_msgSend(v12, "setValue:forHTTPHeaderField:", v36, CFSTR("User-Agent"));
   objc_release(v36);
   objc_msgSend(v12, "setValue:forHTTPHeaderField:", v20, CFSTR("timestamp"));
-  objc_release(v28);
-  objc_release(v26);
-  objc_release(v23);
-  objc_release(v20);
-  objc_release(v14);
-  objc_release(v12);
-  objc_release(v8);
 }
 ```
 * 从上方伪代码可以看出，sign校验通过"262b6c001ea05beceb9d560be1dbf14f"+/api/v6/login+post字典转为的字符串+时间戳+" "+"262b6c001ea05beceb9d560be1dbf14f"的方式拼接，最终进行md5加密生成，那接下来就是寻找post字典是如何转为字符串的。
 9. +[NSMutableDictionary screeningEmptyValueDictionary:]用于去除字典中的空元素，+[NSMutableDictionary getDictionarySorting:]用于字典中key按照ASCLL排序，+[NSArray getArrayConcatenationString:]用于将字典转化为keyvalue的形式，形如username123pwd123，具体分析过程同上。
 
-10.至此，完整的静态分析过程结束，之后就可以依据上方分析结果使用其他语言脱机请求了。
-
-*** 动态分析，基于[ZXHookUtil](https://github.com/SmileZXLee/ZXHookUtil)
+10. 至此，完整的静态分析过程结束，之后就可以依据上方分析结果使用其他语言脱机请求了。
+*** 
+#### 动态分析，基于[ZXHookUtil](https://github.com/SmileZXLee/ZXHookUtil)
 1. 我们添加一个全局按钮，并且在按钮点击事件中打印当前控制器，来到登录控制器，点击按钮，即可观察到登录控制器类名：
 ```objective-c
 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
